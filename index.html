@@ -1,0 +1,1331 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full bg-[#F6F4EE]">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BC LFP Billing Navigator & Day Simulator (MSC July 1, 2026)</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        sand: {
+                            50: '#fbf9f5',
+                            100: '#f5f2eb',
+                            150: '#f0ece3',
+                            200: '#efece6',
+                            300: '#dfd9cd',
+                            400: '#c2b8a3',
+                            700: '#685e4d',
+                            800: '#4a4439',
+                            900: '#2c271e',
+                        },
+                        brand: {
+                            50: '#f0fdfa',
+                            100: '#ccfbf1',
+                            200: '#99f6e4',
+                            600: '#0d9488',
+                            700: '#0f766e',
+                            800: '#115e59',
+                            900: '#134e4a',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'Fira Code', 'monospace'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #F6F4EE;
+            color: #1c1917;
+        }
+
+        /* Light Sandy Card Surface */
+        .sandy-card {
+            background: #FFFFFF;
+            border: 1px solid #E5E0D8;
+            box-shadow: 0 4px 16px -2px rgba(120, 100, 70, 0.05);
+        }
+
+        .sandy-card-alt {
+            background: #FDFBF7;
+            border: 1px solid #EAE4D9;
+            box-shadow: 0 2px 8px rgba(100, 85, 60, 0.04);
+        }
+
+        /* Tab Active States */
+        .nav-tab {
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 0.5rem;
+        }
+
+        .nav-tab.active {
+            color: #ffffff;
+            background-color: #0f766e;
+            font-weight: 700;
+            box-shadow: 0 2px 8px rgba(15, 118, 110, 0.25);
+        }
+
+        .nav-tab:not(.active):hover {
+            background-color: #EAE4D9;
+            color: #1c1917;
+        }
+
+        /* Code Badges */
+        .code-badge {
+            font-family: 'JetBrains Mono', monospace;
+            letter-spacing: -0.02em;
+        }
+
+        /* Custom Range Slider Styling for Light Theme */
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #0f766e;
+            cursor: pointer;
+            box-shadow: 0 2px 6px rgba(15, 118, 110, 0.3);
+            border: 2px solid #ffffff;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #F6F4EE;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #C2B8A3;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #A39780;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col antialiased selection:bg-brand-200 selection:text-brand-900">
+
+    <!-- Navigation Header -->
+    <header class="bg-[#F3EFEA] border-b border-[#E2DCCE] sticky top-0 z-50 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row md:items-center justify-between py-3.5 gap-3">
+                
+                <!-- Logo & Title -->
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 rounded-xl bg-brand-700 flex items-center justify-center font-extrabold text-white text-xl shadow-md shadow-brand-700/20">
+                        LFP
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <h1 class="text-base sm:text-lg font-bold text-stone-900 tracking-tight">BC LFP Billing Navigator</h1>
+                            <span class="bg-brand-100 text-brand-800 text-[10px] sm:text-xs font-bold px-2.5 py-0.5 rounded-full border border-brand-200">
+                                MSC Schedule: July 1, 2026
+                            </span>
+                        </div>
+                        <p class="text-xs text-stone-600">Comprehensive guide & interactive day calculator for BC Longitudinal Family Physicians</p>
+                    </div>
+                </div>
+
+                <!-- Top Quick Rates Bar -->
+                <div class="flex items-center gap-2 text-xs overflow-x-auto pb-1 md:pb-0">
+                    <div class="bg-white px-3 py-1.5 rounded-lg border border-stone-300 shadow-sm whitespace-nowrap flex items-center gap-1.5">
+                        <span class="w-2 h-2 rounded-full bg-brand-600"></span>
+                        <span class="text-stone-600 font-medium">Time Rate:</span>
+                        <strong class="text-stone-900 font-mono font-bold">$32.50</strong>
+                        <span class="text-stone-500 text-[11px]">/ 15m ($130/hr)</span>
+                    </div>
+                    <div class="bg-white px-3 py-1.5 rounded-lg border border-stone-300 shadow-sm whitespace-nowrap flex items-center gap-1.5">
+                        <span class="w-2 h-2 rounded-full bg-amber-600"></span>
+                        <span class="text-stone-600 font-medium">Visit Top-Up:</span>
+                        <strong class="text-stone-900 font-mono font-bold">+$25.00</strong>
+                    </div>
+                    <div class="bg-white px-3 py-1.5 rounded-lg border border-stone-300 shadow-sm whitespace-nowrap flex items-center gap-1.5">
+                        <span class="w-2 h-2 rounded-full bg-amber-500"></span>
+                        <span class="text-stone-600 font-medium">Portal PHN:</span>
+                        <button onclick="copyToClipboard('9694105066')" class="font-mono text-amber-800 bg-amber-50 px-1.5 py-0.5 rounded border border-amber-200 hover:bg-amber-100 font-bold" title="Click to copy dummy PHN">
+                            9694105066
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Main Navigation Tabs -->
+            <nav class="flex space-x-1.5 overflow-x-auto border-t border-stone-300/80 py-2 text-xs sm:text-sm font-medium text-stone-700">
+                <button onclick="switchTab('overview')" id="tab-overview" class="nav-tab active px-3.5 py-2 flex items-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    Overview & 3 Pillars
+                </button>
+                <button onclick="switchTab('simulator')" id="tab-simulator" class="nav-tab px-3.5 py-2 flex items-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
+                    <span>🧮 Interactive Day Simulator</span>
+                </button>
+                <button onclick="switchTab('codes')" id="tab-codes" class="nav-tab px-3.5 py-2 flex items-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 002 2h2a2 2 0 002-2"></path></svg>
+                    Master Billing Schedule
+                </button>
+                <button onclick="switchTab('ffs-vs-lfp')" id="tab-ffs-vs-lfp" class="nav-tab px-3.5 py-2 flex items-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path></svg>
+                    FFS vs LFP Model
+                </button>
+                <button onclick="switchTab('rules')" id="tab-rules" class="nav-tab px-3.5 py-2 flex items-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                    Rules & Rejection Helper
+                </button>
+                <button onclick="switchTab('enrolment')" id="tab-enrolment" class="nav-tab px-3.5 py-2 flex items-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    Setup & Checklist
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-grow w-full space-y-8">
+
+        <!-- TAB 1: OVERVIEW & 3 PILLARS -->
+        <section id="sec-overview" class="tab-content block space-y-8">
+            
+            <!-- Hero Banner -->
+            <div class="relative overflow-hidden rounded-3xl bg-gradient-to-r from-stone-900 via-stone-800 to-brand-900 text-white p-8 sm:p-10 shadow-xl">
+                <div class="relative z-10 max-w-3xl space-y-4">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-500/20 border border-brand-400/30 text-brand-200 text-xs font-semibold">
+                        <span class="w-2 h-2 rounded-full bg-brand-300 animate-pulse"></span>
+                        Designed for BC Family Physicians
+                    </div>
+                    
+                    <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight leading-tight">
+                        How the LFP Payment Model Works
+                    </h2>
+                    
+                    <p class="text-stone-300 text-sm sm:text-base leading-relaxed">
+                        The Longitudinal Family Physician (LFP) Payment Model compensates family physicians for <strong class="text-brand-200 font-semibold">all aspects of longitudinal care</strong>. LFP pays you for direct patient care, indirect charting and lab review, clinical administration, patient visit top-ups, and maintaining an attached panel.
+                    </p>
+
+                    <div class="pt-2 flex flex-wrap gap-3">
+                        <button onclick="switchTab('simulator')" class="bg-brand-600 hover:bg-brand-700 text-white font-bold px-5 py-3 rounded-xl text-sm transition-all shadow-md flex items-center gap-2">
+                            <span>Open Day Simulator</span>
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                        </button>
+                        <button onclick="switchTab('codes')" class="bg-stone-800 hover:bg-stone-700 text-stone-200 font-semibold px-5 py-3 rounded-xl text-sm transition-all border border-stone-700 flex items-center gap-2">
+                            <span>Browse Billing Codes</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- The 3 Core Pillars -->
+            <div class="space-y-4">
+                <div class="flex items-center justify-between">
+                    <h3 class="text-xl font-bold text-stone-900 tracking-tight flex items-center gap-2">
+                        <span class="w-2 h-6 rounded-full bg-brand-700"></span>
+                        The 3 Core Pillars of LFP Compensation
+                    </h3>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    
+                    <!-- Pillar 1 -->
+                    <div class="sandy-card rounded-2xl p-6 relative flex flex-col justify-between hover:border-brand-600 transition-all group">
+                        <div>
+                            <div class="w-12 h-12 rounded-xl bg-brand-100 text-brand-800 border border-brand-200 flex items-center justify-center font-bold text-xl mb-4 group-hover:scale-105 transition-transform">
+                                1
+                            </div>
+                            <h4 class="text-lg font-bold text-stone-900 mb-2">Time Payments</h4>
+                            <p class="text-stone-600 text-xs leading-relaxed mb-4">
+                                Earn <strong class="text-brand-800 font-bold">$130.00 / hour</strong> ($32.50 per 15-minute unit) for all continuous work performed in 3 distinct categories:
+                            </p>
+                            <ul class="space-y-2.5 text-xs text-stone-700">
+                                <li class="flex items-start gap-2 bg-stone-50 p-2.5 rounded-lg border border-stone-200">
+                                    <span class="code-badge bg-brand-100 text-brand-900 px-1.5 py-0.5 rounded text-[11px] font-bold">98010</span>
+                                    <span><strong>Direct Care:</strong> In-person or real-time virtual care with patient present.</span>
+                                </li>
+                                <li class="flex items-start gap-2 bg-stone-50 p-2.5 rounded-lg border border-stone-200">
+                                    <span class="code-badge bg-brand-100 text-brand-900 px-1.5 py-0.5 rounded text-[11px] font-bold">98011</span>
+                                    <span><strong>Indirect Care:</strong> Charting notes, reviewing labs/diagnostics, consult notes, prescription refills.</span>
+                                </li>
+                                <li class="flex items-start gap-2 bg-stone-50 p-2.5 rounded-lg border border-stone-200">
+                                    <span class="code-badge bg-brand-100 text-brand-900 px-1.5 py-0.5 rounded text-[11px] font-bold">98012</span>
+                                    <span><strong>Clinical Admin:</strong> Practice panel management, QI, clinic operations (max 10% annual limit).</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Pillar 2 -->
+                    <div class="sandy-card rounded-2xl p-6 relative flex flex-col justify-between hover:border-amber-600 transition-all group">
+                        <div>
+                            <div class="w-12 h-12 rounded-xl bg-amber-100 text-amber-900 border border-amber-200 flex items-center justify-center font-bold text-xl mb-4 group-hover:scale-105 transition-transform">
+                                2
+                            </div>
+                            <h4 class="text-lg font-bold text-stone-900 mb-2">Patient Interactions</h4>
+                            <p class="text-stone-600 text-xs leading-relaxed mb-4">
+                                Flat-rate top-ups billed <strong class="text-amber-800 font-bold">IN ADDITION to time codes</strong> whenever an encounter or procedure takes place:
+                            </p>
+                            <ul class="space-y-2.5 text-xs text-stone-700">
+                                <li class="flex items-start gap-2 bg-stone-50 p-2.5 rounded-lg border border-stone-200">
+                                    <span class="code-badge bg-amber-100 text-amber-900 px-1.5 py-0.5 rounded text-[11px] font-bold">98031</span>
+                                    <span><strong>In-Person Clinic Visit:</strong> +$25.00 top-up</span>
+                                </li>
+                                <li class="flex items-start gap-2 bg-stone-50 p-2.5 rounded-lg border border-stone-200">
+                                    <span class="code-badge bg-amber-100 text-amber-900 px-1.5 py-0.5 rounded text-[11px] font-bold">98032</span>
+                                    <span><strong>Virtual Visit (Phone/Video):</strong> +$25.00 top-up</span>
+                                </li>
+                                <li class="flex items-start gap-2 bg-stone-50 p-2.5 rounded-lg border border-stone-200">
+                                    <span class="code-badge bg-amber-100 text-amber-900 px-1.5 py-0.5 rounded text-[11px] font-bold">98021/20</span>
+                                    <span><strong>Standard / Advanced Procedure:</strong> +$60.00 / +$110.00</span>
+                                </li>
+                                <li class="flex items-start gap-2 bg-stone-50 p-2.5 rounded-lg border border-stone-200">
+                                    <span class="code-badge bg-amber-100 text-amber-900 px-1.5 py-0.5 rounded text-[11px] font-bold">98022</span>
+                                    <span><strong>Minor Proc / Diagnostic Add-on:</strong> +$10.00 (max 2/pt)</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Pillar 3 -->
+                    <div class="sandy-card rounded-2xl p-6 relative flex flex-col justify-between hover:border-indigo-600 transition-all group">
+                        <div>
+                            <div class="w-12 h-12 rounded-xl bg-indigo-100 text-indigo-900 border border-indigo-200 flex items-center justify-center font-bold text-xl mb-4 group-hover:scale-105 transition-transform">
+                                3
+                            </div>
+                            <h4 class="text-lg font-bold text-stone-900 mb-2">Panel Payments</h4>
+                            <p class="text-stone-600 text-xs leading-relaxed mb-4">
+                                Automatic quarterly payments based on attached panel size in the <strong class="text-indigo-900 font-bold">Provincial Attachment System (PAS)</strong> and patient complexity:
+                            </p>
+                            <ul class="space-y-2.5 text-xs text-stone-700">
+                                <li class="flex items-start gap-2 bg-stone-50 p-2.5 rounded-lg border border-stone-200">
+                                    <span class="text-indigo-600 font-bold">•</span>
+                                    <span><strong>Complexity-Adjusted:</strong> Paid higher rates for elderly, frail, or multi-morbid attached patients.</span>
+                                </li>
+                                <li class="flex items-start gap-2 bg-stone-50 p-2.5 rounded-lg border border-stone-200">
+                                    <span class="text-indigo-600 font-bold">•</span>
+                                    <span><strong>Minimum Requirement:</strong> Must attach at least 250 patients within 4 months of LFP practice start.</span>
+                                </li>
+                                <li class="flex items-start gap-2 bg-stone-50 p-2.5 rounded-lg border border-stone-200">
+                                    <span class="text-indigo-600 font-bold">•</span>
+                                    <span><strong>Automated Remittances:</strong> Paid directly by MSP every quarter based on active PAS registry data.</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Key Advantages Summary -->
+            <div class="sandy-card-alt rounded-2xl p-6 space-y-4">
+                <h4 class="text-base font-bold text-stone-900 flex items-center gap-2">
+                    <svg class="w-5 h-5 text-brand-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    Key LFP Clinical Workflow Benefits
+                </h4>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-xs">
+                    <div class="bg-white p-4 rounded-xl border border-stone-200 shadow-sm">
+                        <div class="font-bold text-brand-800 mb-1">Unpaid Charting Eliminated</div>
+                        <p class="text-stone-600">All evening charting, inbox lab reviews, and specialist consult letters are compensated at $130/hr under code 98011.</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-xl border border-stone-200 shadow-sm">
+                        <div class="font-bold text-amber-800 mb-1">Complex Care Rewarded</div>
+                        <p class="text-stone-600">A 40-minute complex visit yields 2 units of direct time ($65.00) + visit top-up ($25.00) = $90.00 total.</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-xl border border-stone-200 shadow-sm">
+                        <div class="font-bold text-indigo-800 mb-1">Non-Panel Flexibility</div>
+                        <p class="text-stone-600">Up to 30% of total annual clinic time can be spent treating unattached or walk-in patients under full LFP rates.</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-xl border border-stone-200 shadow-sm">
+                        <div class="font-bold text-stone-800 mb-1">Seamless Locum Coverage</div>
+                        <p class="text-stone-600">Locums use designated codes (98040–98064) to bill exact LFP rates without disturbing panel payments.</p>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- TAB 2: INTERACTIVE DAY SIMULATOR -->
+        <section id="sec-simulator" class="tab-content hidden space-y-6">
+            
+            <div class="sandy-card rounded-3xl p-6 sm:p-8">
+                
+                <!-- Simulator Header & Role Toggle -->
+                <div class="flex flex-col lg:flex-row lg:items-center justify-between pb-6 border-b border-stone-200 gap-4">
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <h3 class="text-2xl font-extrabold text-stone-900 tracking-tight">🧮 Interactive Day Billing Simulator</h3>
+                            <span class="bg-brand-100 text-brand-800 text-xs font-bold px-2.5 py-0.5 rounded-full border border-brand-200">MSC July 1, 2026</span>
+                        </div>
+                        <p class="text-xs text-stone-600 mt-1">Configure your clinical schedule to estimate gross billing revenue and test MSC compliance rules in real-time.</p>
+                    </div>
+
+                    <!-- Physician Role Toggle Button -->
+                    <div class="flex items-center bg-stone-150 p-1.5 rounded-xl border border-stone-300 self-start lg:self-auto">
+                        <button id="btn-role-perm" onclick="setPhysicianRole('perm')" class="px-4 py-2 rounded-lg text-xs font-bold bg-brand-700 text-white shadow-sm transition-all">
+                            Permanent Physician
+                        </button>
+                        <button id="btn-role-locum" onclick="setPhysicianRole('locum')" class="px-4 py-2 rounded-lg text-xs font-medium text-stone-700 hover:text-stone-900 transition-all">
+                            Locum Physician
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Main Grid Layout -->
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 mt-6">
+                    
+                    <!-- Left Column: Inputs & Sliders (7 Cols) -->
+                    <div class="lg:col-span-7 space-y-6">
+
+                        <!-- Section 1: Time Breakdown Sliders -->
+                        <div class="bg-sand-100 p-5 rounded-2xl border border-sand-300 space-y-5">
+                            <div class="flex justify-between items-center pb-2 border-b border-sand-300">
+                                <h4 class="text-xs font-extrabold text-stone-900 uppercase tracking-wider flex items-center gap-1.5">
+                                    <span class="w-2 h-2 rounded-full bg-brand-600"></span>
+                                    1. Time Allocation ($32.50 / 15-min unit)
+                                </h4>
+                                <span class="text-[11px] text-stone-600 font-medium">Continuous blocks rounded down</span>
+                            </div>
+
+                            <!-- Direct Care -->
+                            <div class="space-y-1.5">
+                                <div class="flex justify-between text-xs font-bold text-stone-900">
+                                    <label for="sim-direct-min" class="flex items-center gap-1.5">
+                                        <span id="lbl-direct-code" class="code-badge bg-brand-100 text-brand-900 px-2 py-0.5 rounded text-[11px] border border-brand-200">98010</span>
+                                        Direct Patient Care (In-person / Virtual)
+                                    </label>
+                                    <span id="out-direct-units" class="text-brand-800 font-mono font-bold">16 units (240 min)</span>
+                                </div>
+                                <input type="range" id="sim-direct-min" min="0" max="600" step="15" value="240" oninput="calculateSimulator()" class="w-full accent-brand-700">
+                                <div class="flex justify-between text-[11px] text-stone-600 font-medium">
+                                    <span>0 hrs</span>
+                                    <span id="sim-direct-val-text" class="text-stone-900 font-bold">4 hrs 0 mins</span>
+                                    <span>10 hrs</span>
+                                </div>
+                            </div>
+
+                            <!-- Indirect Care -->
+                            <div class="space-y-1.5">
+                                <div class="flex justify-between text-xs font-bold text-stone-900">
+                                    <label for="sim-indirect-min" class="flex items-center gap-1.5">
+                                        <span id="lbl-indirect-code" class="code-badge bg-brand-100 text-brand-900 px-2 py-0.5 rounded text-[11px] border border-brand-200">98011</span>
+                                        Indirect Care (Charting, labs, refills, consults)
+                                    </label>
+                                    <span id="out-indirect-units" class="text-brand-800 font-mono font-bold">6 units (90 min)</span>
+                                </div>
+                                <input type="range" id="sim-indirect-min" min="0" max="300" step="15" value="90" oninput="calculateSimulator()" class="w-full accent-brand-700">
+                                <div class="flex justify-between text-[11px] text-stone-600 font-medium">
+                                    <span>0 hrs</span>
+                                    <span id="sim-indirect-val-text" class="text-stone-900 font-bold">1 hr 30 mins</span>
+                                    <span>5 hrs</span>
+                                </div>
+                            </div>
+
+                            <!-- Clinical Admin -->
+                            <div class="space-y-1.5">
+                                <div class="flex justify-between text-xs font-bold text-stone-900">
+                                    <label for="sim-admin-min" class="flex items-center gap-1.5">
+                                        <span id="lbl-admin-code" class="code-badge bg-brand-100 text-brand-900 px-2 py-0.5 rounded text-[11px] border border-brand-200">98012</span>
+                                        Clinical Admin (Panel management, QI work)
+                                    </label>
+                                    <span id="out-admin-units" class="text-brand-800 font-mono font-bold">2 units (30 min)</span>
+                                </div>
+                                <input type="range" id="sim-admin-min" min="0" max="180" step="15" value="30" oninput="calculateSimulator()" class="w-full accent-brand-700">
+                                <div class="flex justify-between text-[11px] text-stone-600 font-medium">
+                                    <span>0 hrs</span>
+                                    <span id="sim-admin-val-text" class="text-stone-900 font-bold">0 hrs 30 mins</span>
+                                    <span>3 hrs</span>
+                                </div>
+                            </div>
+
+                            <!-- Travel Time -->
+                            <div class="space-y-1.5">
+                                <div class="flex justify-between text-xs font-bold text-stone-900">
+                                    <label for="sim-travel-min" class="flex items-center gap-1.5">
+                                        <span id="lbl-travel-code" class="code-badge bg-stone-200 text-stone-800 px-2 py-0.5 rounded text-[11px] border border-stone-300">98119</span>
+                                        Travel Time (Home Visits)
+                                    </label>
+                                    <span id="out-travel-units" class="text-stone-800 font-mono font-bold">0 units (0 min)</span>
+                                </div>
+                                <input type="range" id="sim-travel-min" min="0" max="120" step="15" value="0" oninput="calculateSimulator()" class="w-full accent-stone-600">
+                                <div class="flex justify-between text-[11px] text-stone-600 font-medium">
+                                    <span>0 hrs</span>
+                                    <span id="sim-travel-val-text" class="text-stone-900 font-bold">0 mins</span>
+                                    <span>2 hrs</span>
+                                </div>
+                            </div>
+
+                            <!-- Visual Stacked Distribution Bar -->
+                            <div class="pt-2">
+                                <div class="text-[11px] font-semibold text-stone-700 mb-1 flex justify-between">
+                                    <span>Time Breakdown Proportion:</span>
+                                    <span id="bar-admin-percent-text" class="text-amber-800 font-bold">Admin: 8%</span>
+                                </div>
+                                <div class="w-full h-3 bg-stone-200 rounded-full overflow-hidden flex shadow-inner">
+                                    <div id="bar-direct" class="bg-brand-600 h-full transition-all duration-300" title="Direct Care" style="width: 66%;"></div>
+                                    <div id="bar-indirect" class="bg-amber-600 h-full transition-all duration-300" title="Indirect Care" style="width: 25%;"></div>
+                                    <div id="bar-admin" class="bg-amber-500 h-full transition-all duration-300" title="Clinical Admin" style="width: 9%;"></div>
+                                    <div id="bar-travel" class="bg-stone-400 h-full transition-all duration-300" title="Travel Time" style="width: 0%;"></div>
+                                </div>
+                                <div class="flex text-[10px] gap-3 mt-1.5 text-stone-600 justify-center font-medium">
+                                    <span class="flex items-center gap-1"><span class="w-2 h-2 rounded bg-brand-600"></span> Direct</span>
+                                    <span class="flex items-center gap-1"><span class="w-2 h-2 rounded bg-amber-600"></span> Indirect</span>
+                                    <span class="flex items-center gap-1"><span class="w-2 h-2 rounded bg-amber-500"></span> Admin</span>
+                                    <span class="flex items-center gap-1"><span class="w-2 h-2 rounded bg-stone-400"></span> Travel</span>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <!-- Section 2: Patient Interactions Counts -->
+                        <div class="bg-sand-100 p-5 rounded-2xl border border-sand-300 space-y-4">
+                            <h4 class="text-xs font-extrabold text-stone-900 uppercase tracking-wider flex items-center gap-1.5">
+                                <span class="w-2 h-2 rounded-full bg-amber-600"></span>
+                                2. Patient Encounters Provided Today
+                            </h4>
+
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                                
+                                <div class="bg-white p-3 rounded-xl border border-stone-200 flex items-center justify-between shadow-sm">
+                                    <div>
+                                        <span class="font-bold text-stone-900 block">In-Person Clinic Visit</span>
+                                        <span id="code-vis-clinic" class="code-badge text-amber-900 text-[11px] font-semibold">98031 (+ $25.00)</span>
+                                    </div>
+                                    <input type="number" id="cnt-clinic-visit" min="0" max="50" value="12" oninput="calculateSimulator()" class="w-16 p-2 border border-stone-300 rounded-lg text-center font-extrabold text-stone-900 focus:ring-2 focus:ring-brand-500">
+                                </div>
+
+                                <div class="bg-white p-3 rounded-xl border border-stone-200 flex items-center justify-between shadow-sm">
+                                    <div>
+                                        <span class="font-bold text-stone-900 block">Virtual Visit (Phone/Video)</span>
+                                        <span id="code-vis-virt" class="code-badge text-amber-900 text-[11px] font-semibold">98032 (+ $25.00)</span>
+                                    </div>
+                                    <input type="number" id="cnt-virtual-visit" min="0" max="50" value="3" oninput="calculateSimulator()" class="w-16 p-2 border border-stone-300 rounded-lg text-center font-extrabold text-stone-900 focus:ring-2 focus:ring-brand-500">
+                                </div>
+
+                                <div class="bg-white p-3 rounded-xl border border-stone-200 flex items-center justify-between shadow-sm">
+                                    <div>
+                                        <span class="font-bold text-stone-900 block">Clinic Consultation</span>
+                                        <span id="code-vis-consult" class="code-badge text-amber-900 text-[11px] font-semibold">98030 (+ $60.00)</span>
+                                    </div>
+                                    <input type="number" id="cnt-consult-visit" min="0" max="20" value="1" oninput="calculateSimulator()" class="w-16 p-2 border border-stone-300 rounded-lg text-center font-extrabold text-stone-900 focus:ring-2 focus:ring-brand-500">
+                                </div>
+
+                                <div class="bg-white p-3 rounded-xl border border-stone-200 flex items-center justify-between shadow-sm">
+                                    <div>
+                                        <span class="font-bold text-stone-900 block">Visit + Standard Proc.</span>
+                                        <span id="code-vis-stdproc" class="code-badge text-amber-900 text-[11px] font-semibold">98021 (+ $60.00)</span>
+                                    </div>
+                                    <input type="number" id="cnt-stdproc-visit" min="0" max="20" value="1" oninput="calculateSimulator()" class="w-16 p-2 border border-stone-300 rounded-lg text-center font-extrabold text-stone-900 focus:ring-2 focus:ring-brand-500">
+                                </div>
+
+                                <div class="bg-white p-3 rounded-xl border border-stone-200 flex items-center justify-between shadow-sm">
+                                    <div>
+                                        <span class="font-bold text-stone-900 block">Visit + Advanced Proc.</span>
+                                        <span id="code-vis-advproc" class="code-badge text-amber-900 text-[11px] font-semibold">98020 (+ $110.00)</span>
+                                    </div>
+                                    <input type="number" id="cnt-advproc-visit" min="0" max="10" value="0" oninput="calculateSimulator()" class="w-16 p-2 border border-stone-300 rounded-lg text-center font-extrabold text-stone-900 focus:ring-2 focus:ring-brand-500">
+                                </div>
+
+                                <div class="bg-white p-3 rounded-xl border border-stone-200 flex items-center justify-between shadow-sm">
+                                    <div>
+                                        <span class="font-bold text-stone-900 block">Minor Proc / Diagnostic</span>
+                                        <span id="code-vis-minorproc" class="code-badge text-amber-900 text-[11px] font-semibold">98022 (+ $10.00)</span>
+                                    </div>
+                                    <input type="number" id="cnt-minorproc-visit" min="0" max="20" value="2" oninput="calculateSimulator()" class="w-16 p-2 border border-stone-300 rounded-lg text-center font-extrabold text-stone-900 focus:ring-2 focus:ring-brand-500">
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <!-- Section 3: Panel Size Estimate (Permanent Mode Only) -->
+                        <div id="panel-estimate-box" class="bg-indigo-50/80 p-5 rounded-2xl border border-indigo-200 space-y-3">
+                            <h4 class="text-xs font-extrabold text-indigo-900 uppercase tracking-wider flex items-center gap-1.5">
+                                <span class="w-2 h-2 rounded-full bg-indigo-600"></span>
+                                3. Estimated Panel Share (Permanent Physicians)
+                            </h4>
+                            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+                                <div>
+                                    <label for="sim-panel-size" class="font-bold text-stone-900 block">Attached Panel Size (PAS Registry):</label>
+                                    <span class="text-stone-600">Avg ~$32/pt/yr complexity-adjusted</span>
+                                </div>
+                                <div class="flex items-center gap-2 self-start sm:self-auto">
+                                    <input type="number" id="sim-panel-size" min="0" max="3000" step="50" value="800" oninput="calculateSimulator()" class="w-24 p-2 border border-indigo-300 rounded-lg text-center font-extrabold text-stone-900">
+                                    <span class="text-stone-700 font-bold">patients</span>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- Right Column: Live Revenue Dashboard & Compliance Checks (5 Cols) -->
+                    <div class="lg:col-span-5 flex flex-col justify-between space-y-6">
+
+                        <!-- Gross Earnings Card -->
+                        <div class="bg-stone-900 text-white rounded-3xl p-6 shadow-xl border border-stone-800 space-y-5">
+                            <div class="border-b border-stone-700 pb-3 flex justify-between items-center">
+                                <h4 class="text-xs font-bold text-brand-200 uppercase tracking-wider">
+                                    Estimated Daily Revenue Breakdown
+                                </h4>
+                                <span class="text-[10px] text-stone-400 font-mono">MSC July 1, 2026</span>
+                            </div>
+
+                            <div class="space-y-3 text-xs">
+                                
+                                <div class="flex justify-between items-center text-stone-300">
+                                    <span class="flex items-center gap-1.5">
+                                        <span class="w-2 h-2 rounded-full bg-brand-400"></span>
+                                        Time Revenue (<span id="res-total-time-hrs" class="font-bold text-white">6.0</span> hrs):
+                                    </span>
+                                    <span id="res-time-gross" class="font-mono font-bold text-white text-sm">$780.00</span>
+                                </div>
+
+                                <div class="flex justify-between items-center text-stone-300">
+                                    <span class="flex items-center gap-1.5">
+                                        <span class="w-2 h-2 rounded-full bg-amber-400"></span>
+                                        Interactions (<span id="res-total-interactions" class="font-bold text-white">17</span> encounters):
+                                    </span>
+                                    <span id="res-interaction-gross" class="font-mono font-bold text-white text-sm">$455.00</span>
+                                </div>
+
+                                <div id="res-panel-row" class="flex justify-between items-center text-stone-300">
+                                    <span class="flex items-center gap-1.5">
+                                        <span class="w-2 h-2 rounded-full bg-indigo-400"></span>
+                                        Daily Panel Share (~220 days/yr):
+                                    </span>
+                                    <span id="res-panel-gross" class="font-mono font-bold text-indigo-300 text-sm">$116.36</span>
+                                </div>
+
+                                <div class="border-t border-stone-800 pt-4 mt-2 flex justify-between items-end">
+                                    <div>
+                                        <span class="text-xs text-stone-400 block font-semibold">TOTAL DAILY GROSS:</span>
+                                        <span class="text-[10px] text-brand-300">Before overhead / clinic split</span>
+                                    </div>
+                                    <div id="res-grand-total" class="text-3xl font-extrabold text-brand-300 font-mono tracking-tight">
+                                        $1,351.36
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Rule Validation & MSC Compliance Checker -->
+                        <div class="bg-white rounded-2xl p-5 border border-stone-200/90 shadow-sm space-y-3">
+                            <h4 class="text-xs font-bold text-stone-900 uppercase tracking-wider flex items-center gap-2">
+                                <svg class="w-4 h-4 text-brand-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                MSC Audit Compliance Checker
+                            </h4>
+
+                            <div id="audit-checks-container" class="space-y-2 text-xs">
+                                <!-- Dynamic check status items injected by JS -->
+                            </div>
+                        </div>
+
+                        <!-- Comparison Alert Box vs Standard FFS -->
+                        <div class="bg-brand-50 border border-brand-200 rounded-2xl p-4 text-xs text-stone-900">
+                            <h5 class="font-bold flex items-center gap-1.5 mb-1 text-brand-900">
+                                <svg class="w-4 h-4 text-brand-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
+                                Advantage Over Traditional Fee-For-Service (FFS)
+                            </h5>
+                            <p class="leading-relaxed text-stone-700">
+                                Under standard FFS visit fees, 17 patient visits would yield ~$550–$680, and your 2 hours of charting/admin time would yield <strong class="text-stone-900">$0.00</strong>. Under LFP, you earn <span id="res-ffs-diff" class="font-bold text-brand-800">+$0.00 more</span> for thorough patient care, inbox management, and charting.
+                            </p>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- TAB 3: MASTER BILLING CODES REFERENCE TABLE -->
+        <section id="sec-codes" class="tab-content hidden space-y-6">
+            
+            <div class="sandy-card rounded-3xl p-6 sm:p-8 space-y-6">
+                
+                <!-- Table Header Controls -->
+                <div class="flex flex-col md:flex-row gap-4 items-center justify-between pb-6 border-b border-stone-200">
+                    <div>
+                        <h3 class="text-xl sm:text-2xl font-bold text-stone-900">Master LFP Billing Schedule</h3>
+                        <p class="text-xs text-stone-600 mt-1">Official codes per the July 1, 2026 Medical Services Commission schedule.</p>
+                    </div>
+
+                    <div class="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
+                        <!-- Search Bar -->
+                        <div class="relative w-full sm:w-64">
+                            <input type="text" id="code-search-input" onkeyup="filterCodesTable()" placeholder="Search code, title, or rule..." class="w-full pl-9 pr-3 py-2 text-xs bg-white border border-stone-300 rounded-xl text-stone-900 placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-brand-600">
+                            <svg class="w-4 h-4 text-stone-400 absolute left-3 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                        </div>
+
+                        <!-- Category Filter Dropdown -->
+                        <select id="code-category-filter" onchange="filterCodesTable()" class="px-3 py-2 text-xs bg-white border border-stone-300 rounded-xl text-stone-800 focus:outline-none focus:ring-2 focus:ring-brand-600 font-medium">
+                            <option value="all">All Categories</option>
+                            <option value="time">Time Codes ($130/hr)</option>
+                            <option value="interaction">Interaction Codes</option>
+                            <option value="procedure">Procedures & Tests</option>
+                            <option value="facility">Facility & Specialty Care</option>
+                            <option value="enrolment">Enrolment & Portal</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Codes Data Table -->
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-xs border-collapse">
+                        <thead>
+                            <tr class="bg-sand-100 text-stone-800 font-bold border-b border-stone-300">
+                                <th class="p-3.5 rounded-tl-xl">Code</th>
+                                <th class="p-3.5">Category</th>
+                                <th class="p-3.5">Service Description</th>
+                                <th class="p-3.5">Rate / Value</th>
+                                <th class="p-3.5 rounded-tr-xl">MSC Rules & Guidance Notes</th>
+                            </tr>
+                        </thead>
+                        <tbody id="codes-table-body" class="divide-y divide-stone-200 text-stone-800">
+                            <!-- Dynamically populated by JS -->
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- TAB 4: FFS VS LFP MODEL COMPARISON -->
+        <section id="sec-ffs-vs-lfp" class="tab-content hidden space-y-6">
+            
+            <div class="sandy-card rounded-3xl p-6 sm:p-8 space-y-6">
+                <div>
+                    <h3 class="text-2xl font-bold text-stone-900">Traditional FFS vs LFP Payment Model</h3>
+                    <p class="text-xs text-stone-600 mt-1">Side-by-side workflow comparison showing how patient care, charting, and indirect hours are compensated.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    
+                    <!-- FFS Card -->
+                    <div class="bg-rose-50/60 rounded-2xl p-6 border border-rose-200 space-y-4">
+                        <div class="flex items-center justify-between border-b border-rose-200 pb-3">
+                            <h4 class="text-lg font-bold text-rose-900">Traditional Fee-For-Service (FFS)</h4>
+                            <span class="text-xs bg-rose-100 text-rose-800 border border-rose-300 px-2.5 py-0.5 rounded-full font-bold">Volume-Driven</span>
+                        </div>
+                        <ul class="space-y-3 text-xs text-stone-800">
+                            <li class="flex items-start gap-2">
+                                <span class="text-rose-600 font-bold">✕</span>
+                                <span><strong>Unpaid Charting & Inbox:</strong> Time spent reviewing lab results, consult reports, and filing EMR charts earns $0.00.</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="text-rose-600 font-bold">✕</span>
+                                <span><strong>Complex Patient Penalty:</strong> Spending 45 minutes on a complex multi-morbidity visit earns the exact same flat fee (~$32-$40) as a 5-minute visit.</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="text-rose-600 font-bold">✕</span>
+                                <span><strong>No Administrative Funding:</strong> Panel management, quality improvement, and clinic management are unpaid.</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="text-rose-600 font-bold">✕</span>
+                                <span><strong>Locum Splits:</strong> Locums require complex fee-split negotiations (e.g. 70/30 split).</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- LFP Card -->
+                    <div class="bg-brand-50/80 rounded-2xl p-6 border border-brand-200 space-y-4">
+                        <div class="flex items-center justify-between border-b border-brand-200 pb-3">
+                            <h4 class="text-lg font-bold text-brand-900">New LFP Payment Model</h4>
+                            <span class="text-xs bg-brand-100 text-brand-800 border border-brand-300 px-2.5 py-0.5 rounded-full font-bold">Comprehensive Care</span>
+                        </div>
+                        <ul class="space-y-3 text-xs text-stone-800">
+                            <li class="flex items-start gap-2">
+                                <span class="text-brand-700 font-bold">✓</span>
+                                <span><strong>Paid Charting & Inbox ($130/hr):</strong> Every 15 minutes of indirect care is paid under code <code class="bg-brand-100 text-brand-900 px-1 rounded font-mono font-bold">98011</code>.</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="text-brand-700 font-bold">✓</span>
+                                <span><strong>Time-Proportional Visits:</strong> Longer complex visits earn time units ($32.50/15m) + interaction top-up (+$25.00).</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="text-brand-700 font-bold">✓</span>
+                                <span><strong>Funded Panel Admin:</strong> Panel reviews and practice QI are billable under code <code class="bg-brand-100 text-brand-900 px-1 rounded font-mono font-bold">98012</code>.</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="text-brand-700 font-bold">✓</span>
+                                <span><strong>Direct Locum Billing:</strong> Locums bill designated codes (98040–98064) directly under their own practitioner number.</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                </div>
+            </div>
+
+        </section>
+
+        <!-- TAB 5: RULES & REJECTION EXPLANATIONS -->
+        <section id="sec-rules" class="tab-content hidden space-y-6">
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                
+                <!-- Core Rules Card -->
+                <div class="sandy-card rounded-3xl p-6 space-y-4">
+                    <h3 class="text-lg font-bold text-stone-900 flex items-center gap-2">
+                        <span class="w-2 h-5 rounded-full bg-brand-700"></span>
+                        Key LFP Billing Rules You Must Follow
+                    </h3>
+
+                    <div class="space-y-3 text-xs text-stone-800">
+                        <div class="p-3.5 bg-sand-100 rounded-xl border border-sand-300">
+                            <strong class="text-brand-900 block mb-1">1. The 15-Minute Rounding Down Rule</strong>
+                            Time units are calculated per continuous block and <strong>always rounded down</strong> to the nearest 15-minute increment (e.g. 28 min = 1 unit; 30 min = 2 units).
+                        </div>
+
+                        <div class="p-3.5 bg-sand-100 rounded-xl border border-sand-300">
+                            <strong class="text-brand-900 block mb-1">2. Daily & Rolling Time Limits</strong>
+                            Maximum allowable time across all time codes combined is <strong>14 hours (56 units) per calendar day</strong> and <strong>120 hours in any 14-day rolling window</strong>.
+                        </div>
+
+                        <div class="p-3.5 bg-sand-100 rounded-xl border border-sand-300">
+                            <strong class="text-brand-900 block mb-1">3. The 10% Clinical Admin Threshold (98012)</strong>
+                            Clinical admin time (<code class="bg-brand-100 text-brand-900 px-1 rounded font-mono font-bold">98012</code>) should not exceed 10% of your total annual clinical hours.
+                        </div>
+
+                        <div class="p-3.5 bg-sand-100 rounded-xl border border-sand-300">
+                            <strong class="text-brand-900 block mb-1">4. WorkSafeBC (WCB) Exclusions</strong>
+                            Services for WorkSafeBC claims <strong>CANNOT</strong> be billed under LFP time codes. Deduct WCB time from LFP time blocks and bill WCB separately under FFS.
+                        </div>
+
+                        <div class="p-3.5 bg-sand-100 rounded-xl border border-sand-300">
+                            <strong class="text-brand-900 block mb-1">5. Out-of-Province Visitors</strong>
+                            LFP time codes apply only to BC PHN holders. Bill out-of-province patients under standard FFS visit codes (e.g., 00100 for office visit).
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Explanatory Codes (Rejections) Card -->
+                <div class="sandy-card rounded-3xl p-6 space-y-4">
+                    <h3 class="text-lg font-bold text-stone-900 flex items-center gap-2">
+                        <span class="w-2 h-5 rounded-full bg-rose-600"></span>
+                        MSP Explanatory Codes & How to Fix Them
+                    </h3>
+
+                    <div class="space-y-3 text-xs">
+                        
+                        <div class="p-3.5 bg-rose-50 rounded-xl border border-rose-200">
+                            <div class="flex justify-between items-center mb-1">
+                                <span class="code-badge font-bold text-rose-900 bg-rose-200 px-2 py-0.5 rounded">PM</span>
+                                <span class="text-[11px] font-semibold text-rose-900">Missing Same-Day Explanation</span>
+                            </div>
+                            <p class="text-stone-700">
+                                Triggered when multiple same-day LFP encounters are submitted without an accompanying note explaining why distinct interactions were required.
+                            </p>
+                        </div>
+
+                        <div class="p-3.5 bg-rose-50 rounded-xl border border-rose-200">
+                            <div class="flex justify-between items-center mb-1">
+                                <span class="code-badge font-bold text-rose-900 bg-rose-200 px-2 py-0.5 rounded">PS</span>
+                                <span class="text-[11px] font-semibold text-rose-900">Invalid Procedure Combination</span>
+                            </div>
+                            <p class="text-stone-700">
+                                Triggered when a standalone procedure is billed with a visit code that already includes procedural compensation.
+                            </p>
+                        </div>
+
+                        <div class="p-3.5 bg-rose-50 rounded-xl border border-rose-200">
+                            <div class="flex justify-between items-center mb-1">
+                                <span class="code-badge font-bold text-rose-900 bg-rose-200 px-2 py-0.5 rounded">PT</span>
+                                <span class="text-[11px] font-semibold text-rose-900">Duplicate Procedure Limit</span>
+                            </div>
+                            <p class="text-stone-700">
+                                Triggered when more than two minor procedure codes (<code class="bg-rose-200 text-rose-900 px-1 rounded font-mono font-bold">98022</code>) are submitted for the same patient on the same calendar day.
+                            </p>
+                        </div>
+
+                        <div class="p-3.5 bg-rose-50 rounded-xl border border-rose-200">
+                            <div class="flex justify-between items-center mb-1">
+                                <span class="code-badge font-bold text-rose-900 bg-rose-200 px-2 py-0.5 rounded">PN</span>
+                                <span class="text-[11px] font-semibold text-rose-900">Overlapping Time Blocks</span>
+                            </div>
+                            <p class="text-stone-700">
+                                Triggered when Teleplan claim start/end times overlap with another time code submitted by you or your locum.
+                            </p>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- TAB 6: ENROLMENT & CHECKLIST -->
+        <section id="sec-enrolment" class="tab-content hidden space-y-6">
+            
+            <div class="sandy-card rounded-3xl p-6 sm:p-8 max-w-4xl mx-auto space-y-6">
+                <div>
+                    <h3 class="text-2xl font-bold text-stone-900">Step-by-Step LFP Setup Guide</h3>
+                    <p class="text-xs text-stone-600 mt-1">Follow this checklist to activate LFP billing privileges with MSP and the Provincial Attachment System (PAS).</p>
+                </div>
+
+                <div class="space-y-6 relative border-l-2 border-brand-700 pl-6 ml-3">
+                    
+                    <!-- Step 1 -->
+                    <div class="relative">
+                        <span class="absolute -left-[31px] top-0 w-6 h-6 bg-brand-700 text-white rounded-full flex items-center justify-center text-xs font-extrabold shadow">1</span>
+                        <h4 class="text-sm font-bold text-stone-900">Submit Portal Enrolment Code (98000 / 98005)</h4>
+                        <p class="text-xs text-stone-700 mt-1">
+                            Submit fee code <strong class="text-brand-800 font-mono">98000</strong> (Locums submit <strong class="text-brand-800 font-mono">98005</strong>) via Teleplan using the official dummy patient demographics:
+                        </p>
+                        <div class="bg-sand-100 p-4 rounded-xl border border-sand-300 font-mono text-xs mt-3 text-stone-900 space-y-1">
+                            <div class="flex justify-between items-center">
+                                <span>PHN: <strong class="text-brand-900">9694105066</strong></span>
+                                <button onclick="copyToClipboard('9694105066')" class="bg-white text-stone-800 border border-stone-300 text-[10px] px-2 py-1 rounded hover:bg-stone-50 font-bold shadow-sm">Copy PHN</button>
+                            </div>
+                            <div>Surname: Portal</div>
+                            <div>First Name: LFP</div>
+                            <div>Date of Birth: Jan 01, 2023</div>
+                            <div>ICD-9 Code: L23</div>
+                        </div>
+                    </div>
+
+                    <!-- Step 2 -->
+                    <div class="relative">
+                        <span class="absolute -left-[31px] top-0 w-6 h-6 bg-brand-700 text-white rounded-full flex items-center justify-center text-xs font-extrabold shadow">2</span>
+                        <h4 class="text-sm font-bold text-stone-900">Register Panel in the PAS Portal</h4>
+                        <p class="text-xs text-stone-700 mt-1">
+                            Log into the Health Sector Locator / PAS registry. Upload your active patient list to ensure quarterly complexity-adjusted panel payments are triggered. You must reach a minimum of <strong>250 attached patients</strong> within 4 months.
+                        </p>
+                    </div>
+
+                    <!-- Step 3 -->
+                    <div class="relative">
+                        <span class="absolute -left-[31px] top-0 w-6 h-6 bg-brand-700 text-white rounded-full flex items-center justify-center text-xs font-extrabold shadow">3</span>
+                        <h4 class="text-sm font-bold text-stone-900">Configure EMR Time Macros</h4>
+                        <p class="text-xs text-stone-700 mt-1">
+                            Set up quick-select time codes (`98010`, `98011`, `98012`) and interaction codes in OSCAR, Med Access, MOIS, or Profile EMR. Ensure daily start and end times are recorded for audit compliance.
+                        </p>
+                    </div>
+
+                    <!-- Step 4 -->
+                    <div class="relative">
+                        <span class="absolute -left-[31px] top-0 w-6 h-6 bg-brand-700 text-white rounded-full flex items-center justify-center text-xs font-extrabold shadow">4</span>
+                        <h4 class="text-sm font-bold text-stone-900">Submit Claims Within 90 Days</h4>
+                        <p class="text-xs text-stone-700 mt-1">
+                            Submit all LFP time and interaction claim records to Teleplan within <strong>90 days</strong> from the service date.
+                        </p>
+                    </div>
+
+                </div>
+            </div>
+
+        </section>
+
+    </main>
+
+    <!-- Toast Notification Overlay -->
+    <div id="toast-notification" class="fixed bottom-5 right-5 bg-stone-900 text-white font-bold px-4 py-2.5 rounded-xl shadow-2xl text-xs translate-y-16 opacity-0 transition-all duration-300 pointer-events-none z-50 flex items-center gap-2">
+        <svg class="w-4 h-4 text-brand-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+        <span id="toast-msg">Copied to clipboard!</span>
+    </div>
+
+    <!-- Page Footer -->
+    <footer class="bg-[#EFECE6] border-t border-stone-300 text-stone-600 text-xs py-8 mt-auto">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-2">
+            <p class="text-stone-800 font-medium">BC Longitudinal Family Physician (LFP) Billing Navigator • Reference Data aligned with MSC LFP Payment Schedule (Effective July 1, 2026).</p>
+            <p class="text-[11px] text-stone-500">Educational reference tool for British Columbia Family Physicians. Always verify individual claims with official Ministry of Health and Doctors of BC documentation.</p>
+        </div>
+    </footer>
+
+    <script>
+        // --- MASTER CODES DATABASE (MSC July 1, 2026 Schedule) ---
+        const CODES_DATA = [
+            // Time Codes
+            { code: "98010", locumCode: "98040", category: "time", name: "Direct Patient Care Time", rate: "$32.50 / 15m", desc: "Face-to-face or virtual real-time clinical care with the patient present. Includes history taking, physical exams, direct counselling, and procedures.", rules: "1 unit = 15 mins. Continuous blocks rounded down. Max 14 hours combined daily time cap across all time codes." },
+            { code: "98011", locumCode: "98041", category: "time", name: "Indirect Patient Care Time", rate: "$32.50 / 15m", desc: "Patient-specific care provided when patient is NOT present. Includes charting notes, reviewing labs/diagnostics, prescription renewals without visit, care coordination, referral letters, filling medical forms, travel time for home visits.", rules: "Must document start & end times or total minutes per day in EMR. Billable within 90 days." },
+            { code: "98012", locumCode: "98042", category: "time", name: "Clinical Administration Time", rate: "$32.50 / 15m", desc: "Physician expertise activities required to manage practice panel, review panel rosters in PAS, quality improvement, and clinical practice administration.", rules: "Cannot exceed 10% of physician's total annual direct + indirect clinical time. Does not require a patient PHN." },
+            { code: "98119", locumCode: "98219", category: "time", name: "Travel Time for Home Visits", rate: "$32.50 / 15m", desc: "Travel time to and from a patient's residence for an eligible home visit.", rules: "Must be billed in conjunction with Home Visit Interaction Code 98033." },
+
+            // Interaction Codes
+            { code: "98031", locumCode: "98061", category: "interaction", name: "In-Person Interaction in Clinic", rate: "$25.00", desc: "Standard in-person patient assessment and management in a clinic setting. Billed IN ADDITION to direct care time code 98010.", rules: "Max 1 per patient per day. Daily interaction cap: 50 visits max." },
+            { code: "98032", locumCode: "98062", category: "interaction", name: "Virtual Interaction (Phone / Video)", rate: "$25.00", desc: "Real-time individual patient assessment conducted via video platform or telephone.", rules: "Cannot bill minor procedures (98022) with virtual interactions." },
+            { code: "98030", locumCode: "98060", category: "interaction", name: "Family Physician Consultation", rate: "$60.00", desc: "In-depth formal consultation requested by another medical practitioner or health care provider.", rules: "Requires documented written consultation request and written report returned to requesting provider." },
+            { code: "98033", locumCode: "98063", category: "interaction", name: "In-Person Interaction in Patient Home", rate: "$100.00", desc: "Comprehensive assessment performed at the patient's primary residence.", rules: "Billed alongside Direct Care Time (98010), Indirect Care (98011), and Travel Time (98119)." },
+            { code: "98034", locumCode: "98064", category: "interaction", name: "Group Interaction (In-Person / Video)", rate: "$25.00 / pt", desc: "Group medical visit / shared appointment provided to two or more patients.", rules: "Billed per attending patient." },
+
+            // Procedures & Diagnostic Add-ons
+            { code: "98021", locumCode: "98051", category: "procedure", name: "In-Person Interaction with Standard Procedure", rate: "$60.00", desc: "In-person visit involving standard surgical or diagnostic procedures (e.g., skin lesion excision, IUD insertion, complex wound care, joint injection). Replaces code 98031 for that visit.", rules: "Includes the visit interaction. Do not bill 98031 separately." },
+            { code: "98020", locumCode: "98050", category: "procedure", name: "In-Person Interaction with Advanced Procedure", rate: "$110.00", desc: "In-person visit involving advanced complex procedures as specified in the MSC schedule.", rules: "Replaces code 98031. Max 1 per patient per day." },
+            { code: "98022", locumCode: "98052", category: "procedure", name: "Minor Procedure or Diagnostic Test Add-on", rate: "$10.00", desc: "Minor diagnostic test or minor procedure (e.g., IM/SC injection, urine dipstick, ECG, rapid strep test) performed during an in-person visit.", rules: "Max 2 units per patient per day (must be distinct tests). Added ON TOP of 98031 or 98021." },
+
+            // Facility & Specialty Extensions
+            { code: "98070", locumCode: "98080", category: "facility", name: "Inpatient Facility Services Time", rate: "$32.50 / 15m", desc: "Direct and indirect care time spent managing hospital inpatients.", rules: "Requires facility registration." },
+            { code: "98071", locumCode: "98081", category: "facility", name: "Pregnancy & Newborn Facility Direct Care", rate: "$32.50 / 15m", desc: "Direct care provided for obstetrical deliveries, newborn care, and hospital maternity wards.", rules: "Requires hospital OB privileges and registration 98006." },
+            { code: "98072", locumCode: "98082", category: "facility", name: "Long-Term Care / Palliative Facility Time", rate: "$32.50 / 15m", desc: "Direct and indirect care time spent for patients in long-term care or hospice/palliative facilities.", rules: "Billable for facility-attached family physicians." },
+
+            // Enrolment & Portal Codes
+            { code: "98000", locumCode: "98005", category: "enrolment", name: "LFP Enrolment / Continuation Code", rate: "Portal Code", desc: "Annual portal registration code confirming eligibility and enrolment in LFP payment model.", rules: "Submit once per calendar year with dummy PHN 9694105066." }
+        ];
+
+        // State Variable for Simulator
+        let currentRole = 'perm'; // 'perm' or 'locum'
+
+        // Page Init
+        window.onload = function() {
+            renderCodesTable(CODES_DATA);
+            calculateSimulator();
+        };
+
+        // --- TAB NAVIGATION SYSTEM ---
+        function switchTab(tabId) {
+            const tabs = ['overview', 'simulator', 'codes', 'ffs-vs-lfp', 'rules', 'enrolment'];
+            tabs.forEach(t => {
+                const contentEl = document.getElementById(`sec-${t}`);
+                const btnEl = document.getElementById(`tab-${t}`);
+                if (contentEl) contentEl.classList.add('hidden');
+                if (btnEl) btnEl.classList.remove('active');
+            });
+
+            const targetContent = document.getElementById(`sec-${tabId}`);
+            const targetBtn = document.getElementById(`tab-${tabId}`);
+            if (targetContent) targetContent.classList.remove('hidden');
+            if (targetBtn) targetBtn.classList.add('active');
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // --- CLIPBOARD COPY UTILITY ---
+        function copyToClipboard(text) {
+            const textArea = document.createElement("textarea");
+            textArea.value = text;
+            document.body.appendChild(textArea);
+            textArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textArea);
+
+            showToast(`Copied "${text}" to clipboard!`);
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById('toast-notification');
+            const msgEl = document.getElementById('toast-msg');
+            msgEl.innerText = message;
+            toast.classList.remove('translate-y-16', 'opacity-0');
+            
+            setTimeout(() => {
+                toast.classList.add('translate-y-16', 'opacity-0');
+            }, 2500);
+        }
+
+        // --- CODES TABLE RENDER & FILTER ---
+        function renderCodesTable(data) {
+            const tbody = document.getElementById('codes-table-body');
+            tbody.innerHTML = '';
+
+            if (data.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" class="p-6 text-center text-stone-500 italic">No matching codes found. Try another search.</td></tr>`;
+                return;
+            }
+
+            data.forEach(item => {
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-amber-50/60 transition-colors border-b border-stone-200";
+
+                let catBadgeClass = "bg-stone-100 text-stone-800 border-stone-300";
+                if (item.category === 'time') catBadgeClass = "bg-brand-100 text-brand-900 border-brand-200";
+                if (item.category === 'interaction') catBadgeClass = "bg-amber-100 text-amber-900 border-amber-200";
+                if (item.category === 'procedure') catBadgeClass = "bg-amber-100 text-amber-900 border-amber-200";
+                if (item.category === 'facility') catBadgeClass = "bg-indigo-100 text-indigo-900 border-indigo-200";
+                if (item.category === 'enrolment') catBadgeClass = "bg-rose-100 text-rose-900 border-rose-200";
+
+                tr.innerHTML = `
+                    <td class="p-3.5">
+                        <div class="flex items-center gap-2">
+                            <span class="code-badge font-bold text-stone-900 bg-sand-100 px-2.5 py-1 rounded-lg border border-stone-300 text-xs">${item.code}</span>
+                            <button onclick="copyToClipboard('${item.code}')" class="text-stone-400 hover:text-brand-700 p-1 rounded" title="Copy code">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                            </button>
+                        </div>
+                        <div class="text-[10px] text-stone-500 mt-1">Locum: <span class="font-mono text-stone-700">${item.locumCode}</span></div>
+                    </td>
+                    <td class="p-3.5">
+                        <span class="text-[11px] font-bold px-2.5 py-1 rounded-full border ${catBadgeClass} capitalize">${item.category}</span>
+                    </td>
+                    <td class="p-3.5">
+                        <div class="font-bold text-stone-900 text-xs">${item.name}</div>
+                        <div class="text-stone-600 text-[11px] mt-0.5 leading-relaxed">${item.desc}</div>
+                    </td>
+                    <td class="p-3.5 font-bold font-mono text-brand-800 whitespace-nowrap text-xs">
+                        ${item.rate}
+                    </td>
+                    <td class="p-3.5 text-[11px] text-stone-600 leading-relaxed">
+                        ${item.rules}
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function filterCodesTable() {
+            const query = document.getElementById('code-search-input').value.toLowerCase();
+            const category = document.getElementById('code-category-filter').value;
+
+            const filtered = CODES_DATA.filter(item => {
+                const matchesCategory = (category === 'all') || (item.category === category);
+                const matchesSearch = item.code.toLowerCase().includes(query) ||
+                                      item.locumCode.toLowerCase().includes(query) ||
+                                      item.name.toLowerCase().includes(query) ||
+                                      item.desc.toLowerCase().includes(query) ||
+                                      item.rules.toLowerCase().includes(query);
+                return matchesCategory && matchesSearch;
+            });
+
+            renderCodesTable(filtered);
+        }
+
+        // --- SIMULATOR ROLE TOGGLE ---
+        function setPhysicianRole(role) {
+            currentRole = role;
+            const permBtn = document.getElementById('btn-role-perm');
+            const locumBtn = document.getElementById('btn-role-locum');
+            const panelBox = document.getElementById('panel-estimate-box');
+            const panelRow = document.getElementById('res-panel-row');
+
+            if (role === 'perm') {
+                permBtn.className = "px-4 py-2 rounded-lg text-xs font-bold bg-brand-700 text-white shadow-sm transition-all";
+                locumBtn.className = "px-4 py-2 rounded-lg text-xs font-medium text-stone-700 hover:text-stone-900 transition-all";
+                if(panelBox) panelBox.classList.remove('hidden');
+                if(panelRow) panelRow.classList.remove('hidden');
+
+                // Update Permanent Code Labels
+                document.getElementById('lbl-direct-code').innerText = "98010";
+                document.getElementById('lbl-indirect-code').innerText = "98011";
+                document.getElementById('lbl-admin-code').innerText = "98012";
+                document.getElementById('lbl-travel-code').innerText = "98119";
+
+                document.getElementById('code-vis-clinic').innerText = "98031 (+ $25.00)";
+                document.getElementById('code-vis-virt').innerText = "98032 (+ $25.00)";
+                document.getElementById('code-vis-consult').innerText = "98030 (+ $60.00)";
+                document.getElementById('code-vis-stdproc').innerText = "98021 (+ $60.00)";
+                document.getElementById('code-vis-advproc').innerText = "98020 (+ $110.00)";
+                document.getElementById('code-vis-minorproc').innerText = "98022 (+ $10.00)";
+            } else {
+                locumBtn.className = "px-4 py-2 rounded-lg text-xs font-bold bg-brand-700 text-white shadow-sm transition-all";
+                permBtn.className = "px-4 py-2 rounded-lg text-xs font-medium text-stone-700 hover:text-stone-900 transition-all";
+                if(panelBox) panelBox.classList.add('hidden');
+                if(panelRow) panelRow.classList.add('hidden');
+
+                // Update Locum Code Labels
+                document.getElementById('lbl-direct-code').innerText = "98040";
+                document.getElementById('lbl-indirect-code').innerText = "98041";
+                document.getElementById('lbl-admin-code').innerText = "98042";
+                document.getElementById('lbl-travel-code').innerText = "98219";
+
+                document.getElementById('code-vis-clinic').innerText = "98061 (+ $25.00)";
+                document.getElementById('code-vis-virt').innerText = "98062 (+ $25.00)";
+                document.getElementById('code-vis-consult').innerText = "98060 (+ $60.00)";
+                document.getElementById('code-vis-stdproc').innerText = "98051 (+ $60.00)";
+                document.getElementById('code-vis-advproc').innerText = "98050 (+ $110.00)";
+                document.getElementById('code-vis-minorproc').innerText = "98052 (+ $10.00)";
+            }
+
+            calculateSimulator();
+        }
+
+        // --- SIMULATOR CALCULATION ENGINE ---
+        function calculateSimulator() {
+            const ratePerUnit = 32.50; // $32.50 per 15 minutes
+
+            // 1. Time Inputs
+            const directMin = parseInt(document.getElementById('sim-direct-min').value) || 0;
+            const indirectMin = parseInt(document.getElementById('sim-indirect-min').value) || 0;
+            const adminMin = parseInt(document.getElementById('sim-admin-min').value) || 0;
+            const travelMin = parseInt(document.getElementById('sim-travel-min').value) || 0;
+
+            // Unit Calculation (Rounded Down per block)
+            const directUnits = Math.floor(directMin / 15);
+            const indirectUnits = Math.floor(indirectMin / 15);
+            const adminUnits = Math.floor(adminMin / 15);
+            const travelUnits = Math.floor(travelMin / 15);
+
+            const totalUnits = directUnits + indirectUnits + adminUnits + travelUnits;
+            const totalMinutes = directMin + indirectMin + adminMin + travelMin;
+            const totalHours = (totalMinutes / 60).toFixed(1);
+
+            // Time text updates
+            document.getElementById('sim-direct-val-text').innerText = formatHrsMins(directMin);
+            document.getElementById('out-direct-units').innerText = `${directUnits} units (${directUnits * 15}m billed)`;
+
+            document.getElementById('sim-indirect-val-text').innerText = formatHrsMins(indirectMin);
+            document.getElementById('out-indirect-units').innerText = `${indirectUnits} units (${indirectUnits * 15}m billed)`;
+
+            document.getElementById('sim-admin-val-text').innerText = formatHrsMins(adminMin);
+            document.getElementById('out-admin-units').innerText = `${adminUnits} units (${adminUnits * 15}m billed)`;
+
+            document.getElementById('sim-travel-val-text').innerText = formatHrsMins(travelMin);
+            document.getElementById('out-travel-units').innerText = `${travelUnits} units (${travelUnits * 15}m billed)`;
+
+            // Update Time Distribution Bar
+            updateDistributionBar(directMin, indirectMin, adminMin, travelMin, totalMinutes);
+
+            // Gross Time Revenue
+            const timeGross = totalUnits * ratePerUnit;
+
+            // 2. Patient Interaction Inputs
+            const cntClinic = parseInt(document.getElementById('cnt-clinic-visit').value) || 0;
+            const cntVirt = parseInt(document.getElementById('cnt-virtual-visit').value) || 0;
+            const cntConsult = parseInt(document.getElementById('cnt-consult-visit').value) || 0;
+            const cntStdProc = parseInt(document.getElementById('cnt-stdproc-visit').value) || 0;
+            const cntAdvProc = parseInt(document.getElementById('cnt-advproc-visit').value) || 0;
+            const cntMinorProc = parseInt(document.getElementById('cnt-minorproc-visit').value) || 0;
+
+            const totalInteractions = cntClinic + cntVirt + cntConsult + cntStdProc + cntAdvProc;
+
+            const interactionGross = (cntClinic * 25.00) +
+                                     (cntVirt * 25.00) +
+                                     (cntConsult * 60.00) +
+                                     (cntStdProc * 60.00) +
+                                     (cntAdvProc * 110.00) +
+                                     (cntMinorProc * 10.00);
+
+            // 3. Panel Share (Permanent only)
+            let dailyPanelShare = 0;
+            if (currentRole === 'perm') {
+                const panelSize = parseInt(document.getElementById('sim-panel-size').value) || 0;
+                // Avg annual panel payment ~$32 per patient -> divided by 220 working days/yr
+                dailyPanelShare = (panelSize * 32.00) / 220;
+            }
+
+            const grandTotal = timeGross + interactionGross + dailyPanelShare;
+
+            // 4. Update Summary Cards
+            document.getElementById('res-total-time-hrs').innerText = totalHours;
+            document.getElementById('res-time-gross').innerText = `$${timeGross.toFixed(2)}`;
+
+            document.getElementById('res-total-interactions').innerText = totalInteractions;
+            document.getElementById('res-interaction-gross').innerText = `$${interactionGross.toFixed(2)}`;
+
+            if (currentRole === 'perm') {
+                document.getElementById('res-panel-gross').innerText = `$${dailyPanelShare.toFixed(2)}`;
+            }
+
+            document.getElementById('res-grand-total').innerText = `$${grandTotal.toFixed(2)}`;
+
+            // FFS Difference calculation estimate
+            const ffsEstimate = (totalInteractions * 38.00);
+            const ffsDiff = grandTotal - ffsEstimate;
+            const ffsDiffEl = document.getElementById('res-ffs-diff');
+            if (ffsDiff >= 0) {
+                ffsDiffEl.innerText = `+$${ffsDiff.toFixed(2)} (+${Math.round((ffsDiff / (ffsEstimate || 1)) * 100)}%)`;
+                ffsDiffEl.className = "font-extrabold text-brand-800";
+            } else {
+                ffsDiffEl.innerText = `-$${Math.abs(ffsDiff).toFixed(2)}`;
+                ffsDiffEl.className = "font-extrabold text-stone-800";
+            }
+
+            // 5. Run Audit Rules Checker
+            runAuditRulesCheck(totalMinutes, adminMin, directMin + indirectMin, totalInteractions, cntMinorProc);
+        }
+
+        // Update distribution progress bar percentages
+        function updateDistributionBar(d, i, a, t, total) {
+            if (total === 0) {
+                document.getElementById('bar-direct').style.width = '0%';
+                document.getElementById('bar-indirect').style.width = '0%';
+                document.getElementById('bar-admin').style.width = '0%';
+                document.getElementById('bar-travel').style.width = '0%';
+                document.getElementById('bar-admin-percent-text').innerText = 'Admin: 0%';
+                return;
+            }
+
+            const pD = ((d / total) * 100).toFixed(0);
+            const pI = ((i / total) * 100).toFixed(0);
+            const pA = ((a / total) * 100).toFixed(0);
+            const pT = ((t / total) * 100).toFixed(0);
+
+            document.getElementById('bar-direct').style.width = `${pD}%`;
+            document.getElementById('bar-indirect').style.width = `${pI}%`;
+            document.getElementById('bar-admin').style.width = `${pA}%`;
+            document.getElementById('bar-travel').style.width = `${pT}%`;
+
+            const adminTxt = document.getElementById('bar-admin-percent-text');
+            adminTxt.innerText = `Admin: ${pA}%`;
+            if (parseInt(pA) > 10) {
+                adminTxt.className = "text-amber-800 font-bold";
+            } else {
+                adminTxt.className = "text-stone-700 font-medium";
+            }
+        }
+
+        function runAuditRulesCheck(totalMin, adminMin, clinicalMin, interactionCount, minorProcCount) {
+            const container = document.getElementById('audit-checks-container');
+            container.innerHTML = '';
+
+            const checks = [];
+
+            // Check 1: 14 hour daily max
+            if (totalMin > 14 * 60) {
+                checks.push({ status: 'fail', msg: `Daily Total Time exceeds the 14-hour max cap (${(totalMin/60).toFixed(1)} hrs > 14 hrs). Overages will be rejected by MSP!` });
+            } else {
+                checks.push({ status: 'pass', msg: `Daily Total Time within 14-hour limit (${(totalMin/60).toFixed(1)} hrs / 14 hrs).` });
+            }
+
+            // Check 2: Admin time 10% annual guideline
+            const adminRatio = clinicalMin > 0 ? (adminMin / (clinicalMin + adminMin)) : 0;
+            if (adminRatio > 0.15) {
+                checks.push({ status: 'warn', msg: `Clinical Admin time is ${(adminRatio * 100).toFixed(0)}% of today's schedule (exceeds recommended 10% annual threshold).` });
+            } else {
+                checks.push({ status: 'pass', msg: `Clinical Admin time is within safe annual threshold (${(adminRatio * 100).toFixed(0)}% <= 10%).` });
+            }
+
+            // Check 3: Max 50 interaction codes per day
+            if (interactionCount > 50) {
+                checks.push({ status: 'fail', msg: `Total visit interactions (${interactionCount}) exceed max daily limit of 50!` });
+            } else {
+                checks.push({ status: 'pass', msg: `Visit interactions (${interactionCount} / 50 daily limit).` });
+            }
+
+            // Check 4: Minor procedure code limit
+            if (minorProcCount > 0) {
+                checks.push({ status: 'pass', msg: `Minor procedure add-ons (${minorProcCount} billed): Code 98022 is valid ONLY with in-person visits (max 2/patient).` });
+            }
+
+            // Render status items
+            checks.forEach(c => {
+                const div = document.createElement('div');
+                div.className = "p-2.5 rounded-xl flex items-start gap-2 text-[11px] font-medium shadow-sm";
+                if (c.status === 'pass') {
+                    div.classList.add('bg-emerald-50', 'text-emerald-950', 'border', 'border-emerald-200');
+                    div.innerHTML = `<span class="text-emerald-700 font-bold">✓</span> <span>${c.msg}</span>`;
+                } else if (c.status === 'warn') {
+                    div.classList.add('bg-amber-50', 'text-amber-950', 'border', 'border-amber-200');
+                    div.innerHTML = `<span class="text-amber-700 font-bold">⚠️</span> <span>${c.msg}</span>`;
+                } else {
+                    div.classList.add('bg-rose-50', 'text-rose-950', 'border', 'border-rose-200');
+                    div.innerHTML = `<span class="text-rose-700 font-bold">⛔</span> <span>${c.msg}</span>`;
+                }
+                container.appendChild(div);
+            });
+        }
+
+        // Helper: Convert minutes to "X hrs Y mins"
+        function formatHrsMins(mins) {
+            const h = Math.floor(mins / 60);
+            const m = mins % 60;
+            if (h === 0) return `${m} mins`;
+            if (m === 0) return `${h} hrs`;
+            return `${h} hrs ${m} mins`;
+        }
+    </script>
+</body>
+</html>
