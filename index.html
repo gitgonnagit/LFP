@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BC LFP Billing Navigator & Day Simulator (MSC July 1, 2026)</title>
+    <title>BC LFP Billing Navigator & Day Simulator (MSC Sept 1, 2026)</title>
     
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -91,7 +91,7 @@
             letter-spacing: -0.02em;
         }
 
-        /* Custom Range Slider Styling for Light Theme */
+        /* Custom Range Slider Styling */
         input[type="range"]::-webkit-slider-thumb {
             -webkit-appearance: none;
             appearance: none;
@@ -137,7 +137,7 @@
                         <div class="flex items-center gap-2">
                             <h1 class="text-base sm:text-lg font-bold text-stone-900 tracking-tight">BC LFP Billing Navigator</h1>
                             <span class="bg-brand-100 text-brand-800 text-[10px] sm:text-xs font-bold px-2.5 py-0.5 rounded-full border border-brand-200">
-                                MSC Schedule: July 1, 2026
+                                MSC Schedule: Sept 1, 2026
                             </span>
                         </div>
                         <p class="text-xs text-stone-600">Comprehensive guide & interactive day calculator for BC Longitudinal Family Physicians</p>
@@ -175,7 +175,7 @@
                     Overview & 3 Pillars
                 </button>
                 <button onclick="switchTab('simulator')" id="tab-simulator" class="nav-tab px-3.5 py-2 flex items-center gap-2">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M9 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
                     <span>🧮 Interactive Day Simulator</span>
                 </button>
                 <button onclick="switchTab('codes')" id="tab-codes" class="nav-tab px-3.5 py-2 flex items-center gap-2">
@@ -188,7 +188,7 @@
                 </button>
                 <button onclick="switchTab('rules')" id="tab-rules" class="nav-tab px-3.5 py-2 flex items-center gap-2">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
-                    Rules & Rejection Helper
+                    Rules & Sept 2026 Amendments
                 </button>
                 <button onclick="switchTab('enrolment')" id="tab-enrolment" class="nav-tab px-3.5 py-2 flex items-center gap-2">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
@@ -209,7 +209,7 @@
                 <div class="relative z-10 max-w-3xl space-y-4">
                     <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-500/20 border border-brand-400/30 text-brand-200 text-xs font-semibold">
                         <span class="w-2 h-2 rounded-full bg-brand-300 animate-pulse"></span>
-                        Designed for BC Family Physicians
+                        Updated with MSC Schedule Amendments (Effective Sept 1, 2026)
                     </div>
                     
                     <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight leading-tight">
@@ -217,7 +217,7 @@
                     </h2>
                     
                     <p class="text-stone-300 text-sm sm:text-base leading-relaxed">
-                        The Longitudinal Family Physician (LFP) Payment Model compensates family physicians for <strong class="text-brand-200 font-semibold">all aspects of longitudinal care</strong>. LFP pays you for direct patient care, indirect charting and lab review, clinical administration, patient visit top-ups, and maintaining an attached panel.
+                        The Longitudinal Family Physician (LFP) Payment Model compensates family physicians for <strong class="text-brand-200 font-semibold">all aspects of longitudinal care</strong>. LFP pays you for direct patient care, indirect charting and lab review, clinical administration, patient visit top-ups, home visits, and maintaining an attached panel.
                     </p>
 
                     <div class="pt-2 flex flex-wrap gap-3">
@@ -228,6 +228,36 @@
                         <button onclick="switchTab('codes')" class="bg-stone-800 hover:bg-stone-700 text-stone-200 font-semibold px-5 py-3 rounded-xl text-sm transition-all border border-stone-700 flex items-center gap-2">
                             <span>Browse Billing Codes</span>
                         </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sept 1, 2026 Schedule Update Highlights -->
+            <div class="bg-amber-50 border border-amber-300 rounded-2xl p-5 space-y-3">
+                <div class="flex items-center justify-between">
+                    <h3 class="text-sm font-bold text-amber-900 flex items-center gap-2">
+                        <span class="px-2 py-0.5 rounded bg-amber-200 text-amber-900 text-xs font-extrabold">NEW</span>
+                        Summary of MSC Schedule Amendments (Effective September 1, 2026)
+                    </h3>
+                    <span class="text-xs text-amber-800 font-medium">Ref: MSC LFP Payment Schedule</span>
+                </div>
+                <p class="text-xs text-amber-950 leading-relaxed">
+                    The Medical Services Commission has introduced dedicated codes for billing in-person visits in a patient's home when seeing multiple patients:
+                </p>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs pt-1">
+                    <div class="bg-white p-3 rounded-xl border border-amber-200">
+                        <div class="font-bold text-amber-900 flex items-center gap-2">
+                            <span class="code-badge bg-amber-100 px-1.5 py-0.5 rounded border border-amber-300">98033 / 98063</span>
+                            <span>Home Visit - First Patient ($100.00)</span>
+                        </div>
+                        <p class="text-stone-600 text-[11px] mt-1">Billed for the primary patient evaluated during an in-person home visit encounter.</p>
+                    </div>
+                    <div class="bg-white p-3 rounded-xl border border-amber-200">
+                        <div class="font-bold text-amber-900 flex items-center gap-2">
+                            <span class="code-badge bg-amber-100 px-1.5 py-0.5 rounded border border-amber-300">98038 / 98068</span>
+                            <span>Home Visit - Additional Patient(s) ($25.00)</span>
+                        </div>
+                        <p class="text-stone-600 text-[11px] mt-1">New code for each additional patient seen at the same home during the same visit.</p>
                     </div>
                 </div>
             </div>
@@ -286,8 +316,8 @@
                                     <span><strong>In-Person Clinic Visit:</strong> +$25.00 top-up</span>
                                 </li>
                                 <li class="flex items-start gap-2 bg-stone-50 p-2.5 rounded-lg border border-stone-200">
-                                    <span class="code-badge bg-amber-100 text-amber-900 px-1.5 py-0.5 rounded text-[11px] font-bold">98032</span>
-                                    <span><strong>Virtual Visit (Phone/Video):</strong> +$25.00 top-up</span>
+                                    <span class="code-badge bg-amber-100 text-amber-900 px-1.5 py-0.5 rounded text-[11px] font-bold">98033/38</span>
+                                    <span><strong>Home Visit (First / Add'l):</strong> +$100.00 / +$25.00</span>
                                 </li>
                                 <li class="flex items-start gap-2 bg-stone-50 p-2.5 rounded-lg border border-stone-200">
                                     <span class="code-badge bg-amber-100 text-amber-900 px-1.5 py-0.5 rounded text-[11px] font-bold">98021/20</span>
@@ -352,7 +382,7 @@
                     </div>
                     <div class="bg-white p-4 rounded-xl border border-stone-200 shadow-sm">
                         <div class="font-bold text-stone-800 mb-1">Seamless Locum Coverage</div>
-                        <p class="text-stone-600">Locums use designated codes (98040–98064) to bill exact LFP rates without disturbing panel payments.</p>
+                        <p class="text-stone-600">Locums use designated codes (98040–98068) to bill exact LFP rates without disturbing panel payments.</p>
                     </div>
                 </div>
             </div>
@@ -369,7 +399,7 @@
                     <div>
                         <div class="flex items-center gap-2">
                             <h3 class="text-2xl font-extrabold text-stone-900 tracking-tight">🧮 Interactive Day Billing Simulator</h3>
-                            <span class="bg-brand-100 text-brand-800 text-xs font-bold px-2.5 py-0.5 rounded-full border border-brand-200">MSC July 1, 2026</span>
+                            <span class="bg-brand-100 text-brand-800 text-xs font-bold px-2.5 py-0.5 rounded-full border border-brand-200">MSC Sept 1, 2026</span>
                         </div>
                         <p class="text-xs text-stone-600 mt-1">Configure your clinical schedule to estimate gross billing revenue and test MSC compliance rules in real-time.</p>
                     </div>
@@ -518,6 +548,22 @@
 
                                 <div class="bg-white p-3 rounded-xl border border-stone-200 flex items-center justify-between shadow-sm">
                                     <div>
+                                        <span class="font-bold text-stone-900 block">Home Visit (1st Pt)</span>
+                                        <span id="code-vis-home" class="code-badge text-amber-900 text-[11px] font-semibold">98033 (+ $100.00)</span>
+                                    </div>
+                                    <input type="number" id="cnt-home-visit" min="0" max="10" value="0" oninput="calculateSimulator()" class="w-16 p-2 border border-stone-300 rounded-lg text-center font-extrabold text-stone-900 focus:ring-2 focus:ring-brand-500">
+                                </div>
+
+                                <div class="bg-white p-3 rounded-xl border border-stone-200 flex items-center justify-between shadow-sm">
+                                    <div>
+                                        <span class="font-bold text-stone-900 block">Home Visit (Add'l Pt)</span>
+                                        <span id="code-vis-homeadd" class="code-badge text-amber-900 text-[11px] font-semibold">98038 (+ $25.00)</span>
+                                    </div>
+                                    <input type="number" id="cnt-homeadd-visit" min="0" max="10" value="0" oninput="calculateSimulator()" class="w-16 p-2 border border-stone-300 rounded-lg text-center font-extrabold text-stone-900 focus:ring-2 focus:ring-brand-500">
+                                </div>
+
+                                <div class="bg-white p-3 rounded-xl border border-stone-200 flex items-center justify-between shadow-sm">
+                                    <div>
                                         <span class="font-bold text-stone-900 block">Clinic Consultation</span>
                                         <span id="code-vis-consult" class="code-badge text-amber-900 text-[11px] font-semibold">98030 (+ $60.00)</span>
                                     </div>
@@ -580,7 +626,7 @@
                                 <h4 class="text-xs font-bold text-brand-200 uppercase tracking-wider">
                                     Estimated Daily Revenue Breakdown
                                 </h4>
-                                <span class="text-[10px] text-stone-400 font-mono">MSC July 1, 2026</span>
+                                <span class="text-[10px] text-stone-400 font-mono">MSC Sept 1, 2026</span>
                             </div>
 
                             <div class="space-y-3 text-xs">
@@ -661,7 +707,7 @@
                 <div class="flex flex-col md:flex-row gap-4 items-center justify-between pb-6 border-b border-stone-200">
                     <div>
                         <h3 class="text-xl sm:text-2xl font-bold text-stone-900">Master LFP Billing Schedule</h3>
-                        <p class="text-xs text-stone-600 mt-1">Official codes per the July 1, 2026 Medical Services Commission schedule.</p>
+                        <p class="text-xs text-stone-600 mt-1">Official codes per the September 1, 2026 Medical Services Commission schedule.</p>
                     </div>
 
                     <div class="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
@@ -763,7 +809,7 @@
                             </li>
                             <li class="flex items-start gap-2">
                                 <span class="text-brand-700 font-bold">✓</span>
-                                <span><strong>Direct Locum Billing:</strong> Locums bill designated codes (98040–98064) directly under their own practitioner number.</span>
+                                <span><strong>Direct Locum Billing:</strong> Locums bill designated codes (98040–98068) directly under their own practitioner number.</span>
                             </li>
                         </ul>
                     </div>
@@ -773,9 +819,30 @@
 
         </section>
 
-        <!-- TAB 5: RULES & REJECTION EXPLANATIONS -->
+        <!-- TAB 5: RULES & SEPTEMBER 2026 AMENDMENTS -->
         <section id="sec-rules" class="tab-content hidden space-y-6">
             
+            <!-- September 1, 2026 Special Notice Card -->
+            <div class="bg-amber-50 rounded-3xl p-6 border border-amber-300 space-y-3">
+                <div class="flex items-center gap-2">
+                    <span class="bg-amber-700 text-white font-extrabold text-xs px-2.5 py-1 rounded-lg">Sept 1, 2026 Update</span>
+                    <h3 class="text-lg font-bold text-amber-950">In-Person Home Visit Code Structure Updates</h3>
+                </div>
+                <p class="text-xs text-amber-900 leading-relaxed">
+                    Per the September 1, 2026 Medical Services Commission LFP Payment Schedule release, amendments were introduced for home visits to separate the primary patient evaluation from additional patients evaluated at the same home visit:
+                </p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs pt-1">
+                    <div class="bg-white p-4 rounded-xl border border-amber-200">
+                        <strong class="text-stone-900 block mb-1">First Patient Home Visit (98033 / 98063)</strong>
+                        <p class="text-stone-600">Billed for the initial/primary patient evaluated at the residence ($100.00 interaction fee + billable direct time under 98010/98040 and travel time under 98119/98219).</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-xl border border-amber-200">
+                        <strong class="text-stone-900 block mb-1">Additional Patient(s) Home Visit (98038 / 98068) - NEW</strong>
+                        <p class="text-stone-600">Billed for each additional patient evaluated in the same home setting during the visit ($25.00 interaction fee + applicable direct care time).</p>
+                    </div>
+                </div>
+            </div>
+
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 
                 <!-- Core Rules Card -->
@@ -942,25 +1009,26 @@
     <!-- Page Footer -->
     <footer class="bg-[#EFECE6] border-t border-stone-300 text-stone-600 text-xs py-8 mt-auto">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-2">
-            <p class="text-stone-800 font-medium">BC Longitudinal Family Physician (LFP) Billing Navigator • Reference Data aligned with MSC LFP Payment Schedule (Effective July 1, 2026).</p>
+            <p class="text-stone-800 font-medium">BC Longitudinal Family Physician (LFP) Billing Navigator • Reference Data aligned with MSC LFP Payment Schedule (Effective September 1, 2026).</p>
             <p class="text-[11px] text-stone-500">Educational reference tool for British Columbia Family Physicians. Always verify individual claims with official Ministry of Health and Doctors of BC documentation.</p>
         </div>
     </footer>
 
     <script>
-        // --- MASTER CODES DATABASE (MSC July 1, 2026 Schedule) ---
+        // --- MASTER CODES DATABASE (MSC September 1, 2026 Schedule) ---
         const CODES_DATA = [
             // Time Codes
             { code: "98010", locumCode: "98040", category: "time", name: "Direct Patient Care Time", rate: "$32.50 / 15m", desc: "Face-to-face or virtual real-time clinical care with the patient present. Includes history taking, physical exams, direct counselling, and procedures.", rules: "1 unit = 15 mins. Continuous blocks rounded down. Max 14 hours combined daily time cap across all time codes." },
-            { code: "98011", locumCode: "98041", category: "time", name: "Indirect Patient Care Time", rate: "$32.50 / 15m", desc: "Patient-specific care provided when patient is NOT present. Includes charting notes, reviewing labs/diagnostics, prescription renewals without visit, care coordination, referral letters, filling medical forms, travel time for home visits.", rules: "Must document start & end times or total minutes per day in EMR. Billable within 90 days." },
+            { code: "98011", locumCode: "98041", category: "time", name: "Indirect Patient Care Time", rate: "$32.50 / 15m", desc: "Patient-specific care provided when patient is NOT present. Includes charting notes, reviewing labs/diagnostics, prescription renewals without visit, care coordination, referral letters, filling medical forms.", rules: "Must document start & end times or total minutes per day in EMR. Billable within 90 days." },
             { code: "98012", locumCode: "98042", category: "time", name: "Clinical Administration Time", rate: "$32.50 / 15m", desc: "Physician expertise activities required to manage practice panel, review panel rosters in PAS, quality improvement, and clinical practice administration.", rules: "Cannot exceed 10% of physician's total annual direct + indirect clinical time. Does not require a patient PHN." },
-            { code: "98119", locumCode: "98219", category: "time", name: "Travel Time for Home Visits", rate: "$32.50 / 15m", desc: "Travel time to and from a patient's residence for an eligible home visit.", rules: "Must be billed in conjunction with Home Visit Interaction Code 98033." },
+            { code: "98119", locumCode: "98219", category: "time", name: "Travel Time for Home Visits", rate: "$32.50 / 15m", desc: "Travel time to and from a patient's residence for an eligible home visit.", rules: "Must be billed in conjunction with Home Visit Interaction Code 98033 or 98038." },
 
             // Interaction Codes
             { code: "98031", locumCode: "98061", category: "interaction", name: "In-Person Interaction in Clinic", rate: "$25.00", desc: "Standard in-person patient assessment and management in a clinic setting. Billed IN ADDITION to direct care time code 98010.", rules: "Max 1 per patient per day. Daily interaction cap: 50 visits max." },
             { code: "98032", locumCode: "98062", category: "interaction", name: "Virtual Interaction (Phone / Video)", rate: "$25.00", desc: "Real-time individual patient assessment conducted via video platform or telephone.", rules: "Cannot bill minor procedures (98022) with virtual interactions." },
             { code: "98030", locumCode: "98060", category: "interaction", name: "Family Physician Consultation", rate: "$60.00", desc: "In-depth formal consultation requested by another medical practitioner or health care provider.", rules: "Requires documented written consultation request and written report returned to requesting provider." },
-            { code: "98033", locumCode: "98063", category: "interaction", name: "In-Person Interaction in Patient Home", rate: "$100.00", desc: "Comprehensive assessment performed at the patient's primary residence.", rules: "Billed alongside Direct Care Time (98010), Indirect Care (98011), and Travel Time (98119)." },
+            { code: "98033", locumCode: "98063", category: "interaction", name: "In-Person Interaction in Patient Home - First Patient", rate: "$100.00", desc: "Comprehensive assessment performed at the patient's primary residence for the primary/first patient.", rules: "Billed alongside Direct Care Time (98010), Indirect Care (98011), and Travel Time (98119). Section 54(b) amended Sept 1, 2026." },
+            { code: "98038", locumCode: "98068", category: "interaction", name: "In-Person Interaction in Patient Home - Additional Patient(s)", rate: "$25.00", desc: "In-person interaction for additional patient(s) evaluated during the same home visit at the same residence.", rules: "Added Sept 1, 2026. Billed for each additional patient seen at the same home setting during the visit." },
             { code: "98034", locumCode: "98064", category: "interaction", name: "Group Interaction (In-Person / Video)", rate: "$25.00 / pt", desc: "Group medical visit / shared appointment provided to two or more patients.", rules: "Billed per attending patient." },
 
             // Procedures & Diagnostic Add-ons
@@ -1115,6 +1183,8 @@
 
                 document.getElementById('code-vis-clinic').innerText = "98031 (+ $25.00)";
                 document.getElementById('code-vis-virt').innerText = "98032 (+ $25.00)";
+                document.getElementById('code-vis-home').innerText = "98033 (+ $100.00)";
+                document.getElementById('code-vis-homeadd').innerText = "98038 (+ $25.00)";
                 document.getElementById('code-vis-consult').innerText = "98030 (+ $60.00)";
                 document.getElementById('code-vis-stdproc').innerText = "98021 (+ $60.00)";
                 document.getElementById('code-vis-advproc').innerText = "98020 (+ $110.00)";
@@ -1133,6 +1203,8 @@
 
                 document.getElementById('code-vis-clinic').innerText = "98061 (+ $25.00)";
                 document.getElementById('code-vis-virt').innerText = "98062 (+ $25.00)";
+                document.getElementById('code-vis-home').innerText = "98063 (+ $100.00)";
+                document.getElementById('code-vis-homeadd').innerText = "98068 (+ $25.00)";
                 document.getElementById('code-vis-consult').innerText = "98060 (+ $60.00)";
                 document.getElementById('code-vis-stdproc').innerText = "98051 (+ $60.00)";
                 document.getElementById('code-vis-advproc').innerText = "98050 (+ $110.00)";
@@ -1184,15 +1256,19 @@
             // 2. Patient Interaction Inputs
             const cntClinic = parseInt(document.getElementById('cnt-clinic-visit').value) || 0;
             const cntVirt = parseInt(document.getElementById('cnt-virtual-visit').value) || 0;
+            const cntHome = parseInt(document.getElementById('cnt-home-visit').value) || 0;
+            const cntHomeAdd = parseInt(document.getElementById('cnt-homeadd-visit').value) || 0;
             const cntConsult = parseInt(document.getElementById('cnt-consult-visit').value) || 0;
             const cntStdProc = parseInt(document.getElementById('cnt-stdproc-visit').value) || 0;
             const cntAdvProc = parseInt(document.getElementById('cnt-advproc-visit').value) || 0;
             const cntMinorProc = parseInt(document.getElementById('cnt-minorproc-visit').value) || 0;
 
-            const totalInteractions = cntClinic + cntVirt + cntConsult + cntStdProc + cntAdvProc;
+            const totalInteractions = cntClinic + cntVirt + cntHome + cntHomeAdd + cntConsult + cntStdProc + cntAdvProc;
 
             const interactionGross = (cntClinic * 25.00) +
                                      (cntVirt * 25.00) +
+                                     (cntHome * 100.00) +
+                                     (cntHomeAdd * 25.00) +
                                      (cntConsult * 60.00) +
                                      (cntStdProc * 60.00) +
                                      (cntAdvProc * 110.00) +
